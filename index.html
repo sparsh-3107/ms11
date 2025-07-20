@@ -1373,16 +1373,27 @@ button.wyr-btn:hover {
     }
   }
 function showSlide(index) {
+  const bgMusic = document.getElementById("bgMusic");
+  const video = document.getElementById("mayaVideo");
+
+  // If we're leaving the video slide, stop video and resume music
+  if (sections[current].id === "videoSlide" && video && !video.paused) {
+    video.pause();
+    video.currentTime = 0;
+    if (bgMusic.paused) bgMusic.play();
+  }
+
   current = index;
   sections.forEach((s, i) => s.classList.toggle("active", i === index));
   updateNavButtons();
   sections[current].focus();
 
-  // 🎊 Trigger final confetti on last slide
+  // 🎊 Trigger confetti on final slide
   if (current === sections.length - 1) {
-    firework(); // Reuse your existing confetti function
+    firework();
   }
 }
+
 
 
   function nextSlide() {
@@ -1809,6 +1820,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("option1").innerText = current.o1;
   document.getElementById("option2").innerText = current.o2;
 });
+
 function playMayaVideo() {
   const video = document.getElementById("mayaVideo");
   const bgMusic = document.getElementById("bgMusic");
@@ -1817,10 +1829,12 @@ function playMayaVideo() {
   video.play();
   bgMusic.pause();
 
-  video.addEventListener("ended", () => {
+  // Resume background music when video ends
+  video.onended = () => {
     bgMusic.play();
-  });
+  };
 }
+
 
 const storyPages = [
   "Once upon a time, two souls collided... 💫",
